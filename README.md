@@ -4,6 +4,10 @@
 # clone
 <pre>git clone https://github.com/VenomVendor/RESTful-Node.git</pre>
 
+# prerequisites
+ - Node https://nodejs.org/en/download/ / https://docs.npmjs.com/getting-started/installing-node
+ - MongoDB https://docs.mongodb.org/manual/installation/
+
 # {}
 <pre>
 git clone https://github.com/VenomVendor/RESTful-Node.git
@@ -34,11 +38,13 @@ mongoimport --type csv --headerline weather_data.csv -d weather -c data
 <pre>http://localhost:3030</pre>
 
 # APIs
-    - http://localhost:3030/v1/
-    - http://localhost:3030/v1/demo
-    - http://localhost:3030/v1/about
-    - http://localhost:3030/v1/get/weather?[params]
+ - http://localhost:3030/v1/
+ - http://localhost:3030/v1/demo
+ - http://localhost:3030/v1/about
+ - http://localhost:3030/v1/get/weather?[params]
 
+<pre>http://localhost:3030/v1/get/weather?limit=0&offset=0&state=Vermont&temperature=lte~39&windSpeed=gt~4.00000&windDir=lt~180&humidity=gte~60</pre>
+ 
 # params
 param (case-sensitive) | Type | Default | Description
 ------ | ---- | ------- | -----------
