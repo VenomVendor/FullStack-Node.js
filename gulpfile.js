@@ -24,6 +24,7 @@ var srcFiles = ['./src/**/*.js', '!./src/public/**/*.js'];
 
 var srcClientFiles = ['./src/public/**/*.js'];
 var srcHtml = ['./src/public/**/*.html'];
+var srcEjs = ['./src/views/**/*.ejs'];
 var srcSass = ['./src/public/**/*.scss'];
 var srcImg = ['./src/public/images/*'];
 
@@ -115,6 +116,10 @@ gulp.task('clearConsole', function () {
     console.clear();
 });
 
+gulp.task('ejs', function () {
+    copier(srcEjs);
+});
+
 gulp.task('images', function () {
     copier(srcImg);
 });
@@ -149,10 +154,11 @@ gulp.task('watch', function () {
     gulp.watch(srcFiles, ['clearConsole', 'jslintSrc']);
     gulp.watch(srcClientFiles, ['clearConsole', 'jslintClient', 'minify-js']);
     gulp.watch(srcHtml, ['minify-html']);
+    gulp.watch(srcEjs, ['ejs']);
     gulp.watch(srcSass, ['styles']);
     gulp.watch(srcImg, ['images']);
     gulp.watch(DEST_IMG, ['strip-metadata'])
 });
 
-gulp.task('default', ['minify-html', 'images', 'strip-metadata', 'jslint', 'minify-js', 'styles', 'watch', 'nodemon']);
+gulp.task('default', ['minify-html', 'images', 'ejs', 'strip-metadata', 'jslint', 'minify-js', 'styles', 'watch', 'nodemon']);
 module.exports = gulp;
