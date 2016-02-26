@@ -1,0 +1,2 @@
+build/public/javascripts/min/*.js
+node_modules
