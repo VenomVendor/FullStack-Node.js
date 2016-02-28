@@ -10,8 +10,11 @@ import logger from 'morgan';
 import path from 'path';
 import responseTime from 'response-time';
 import index from './routes/index';
+import post from './routes/crud/create';
+import get from './routes/crud/read';
+import update from './routes/crud/update';
+import del from './routes/crud/delete';
 import demo from './routes/demo';
-import get from './routes/read';
 import { constants, strings as S } from './utils/constants';
 
 const logDir = `${__dirname}/../logs/`;
@@ -98,7 +101,10 @@ app.use('/img', express.static(path.join(_dirname, 'public', 'images')));
 app.use('', express.static(path.join(_dirname, 'public', 'htmls')));
 
 app.use(`${_version}/`, index);
+app.use(`${_version}/post/`, post);
 app.use(`${_version}/get/`, get);
+app.use(`${_version}/update/`, update);
+app.use(`${_version}/del/`, del);
 app.use(`${_version}/demo/`, demo);
 
 /* ************* SERVE STATIC END ***************** */
