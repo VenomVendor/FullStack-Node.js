@@ -10,8 +10,11 @@ import logger from 'morgan';
 import path from 'path';
 import responseTime from 'response-time';
 import index from './routes/index';
+import post from './routes/crud/create';
+import get from './routes/crud/read';
+import update from './routes/crud/update';
+import del from './routes/crud/delete';
 import demo from './routes/demo';
-import get from './routes/read';
 import { constants, strings as S } from './utils/constants';
 
 const logDir = `${__dirname}/../logs/`;
@@ -24,19 +27,6 @@ const PORT = 3030;
 
 /* current date */
 logger.date = () => new Date().getTime();
-
-/* eslint no-extend-native: 0 */
-Object.defineProperty(String.prototype, 'isEmpty', {
-    value() {
-        return this.length === 0;
-    }
-});
-
-Object.defineProperty(String.prototype, 'isTooEmpty', {
-    value() {
-        return this.isEmpty() || this.trim().length === 0;
-    }
-});
 
 const app = express();
 const start = process.hrtime();
@@ -111,7 +101,10 @@ app.use('/img', express.static(path.join(_dirname, 'public', 'images')));
 app.use('', express.static(path.join(_dirname, 'public', 'htmls')));
 
 app.use(`${_version}/`, index);
+app.use(`${_version}/post/`, post);
 app.use(`${_version}/get/`, get);
+app.use(`${_version}/update/`, update);
+app.use(`${_version}/del/`, del);
 app.use(`${_version}/demo/`, demo);
 
 /* ************* SERVE STATIC END ***************** */
@@ -122,16 +115,9 @@ app.all('/:filename/', (req, res) => {
     res.redirect(301, `${_version}/${req.params.filename}`);
 });
 
-app.get(`${_version}/ejs/*/*`, (req, res) => {
+app.get(`${_version}/**/*`, (req, res) => {
     const url = req.url;
-    res.render('error', {
-        pageName: url
-    });
-});
-
-app.get(`${_version}/ejs/*`, (req, res) => {
-    const url = req.url;
-    res.render('index', {
+    res.status(404).render('error', {
         pageName: url
     });
 });
@@ -147,7 +133,10 @@ app.get(`${_version}/:filename`, (req, res) => {
             }
         });
     } else {
-        sendError(req, res, 404);
+        const url = req.url;
+        res.render('index', {
+            pageName: url
+        });
     }
 });
 /* **************** ROUTING ENDS ***************** */
