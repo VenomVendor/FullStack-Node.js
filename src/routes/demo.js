@@ -1,11 +1,9 @@
-'use strict';
-
-var express = require('express');
-var router = express.Router();
+import express from 'express';
+const router = new express.Router();
 
 /* demo. */
-router.all('/', function(req, res) {
-    var data = {
+router.all('/', (req, res) => {
+    const data = {
         success: 'success',
         type: 'demo'
     };
@@ -13,4 +11,4 @@ router.all('/', function(req, res) {
     res.end();
 });
 
-module.exports = router;
+export default router;

@@ -1,10 +1,11 @@
 {
     "ignore": [
         "gulpfile.js",
+        "gulpfile.babel.js",
         "node_modules/*",
         ".idea",
         "bin",
         "*.json",
-        "public/*"
+        "src/public/*"
     ]
 }

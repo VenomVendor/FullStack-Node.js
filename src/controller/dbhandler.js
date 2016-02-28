@@ -1,44 +1,42 @@
-'use strict';
+const MongoClient = require('mongodb').MongoClient;
+import e from './exceptions';
 
-var MongoClient = require('mongodb').MongoClient;
-var e = require('./exceptions');
-
-var getMongoDb = function(callback) {
-    MongoClient.connect('mongodb://127.0.0.1:27017/weather', function(err, db) {
+const getMongoDb = callback => {
+    MongoClient.connect('mongodb://127.0.0.1:27017/weather', (err, db) => {
         try {
             callback(err, db);
-        } catch (e) {
-            callback(e);
+        } catch (exception) {
+            callback(exception);
         }
     });
 };
 
-var connectionError = function(err) {
-    if(!err.msg) {
+const connectionError = err => {
+    if (!err.msg) {
         err.msg = 'Error while creating connection.';
     }
     return e.printStackTrace(err);
 };
 
-var connectError = function(err) {
-    if(!err.msg) {
+const connectError = err => {
+    if (!err.msg) {
         err.msg = 'Error while connecting.';
     }
     return e.printStackTrace(err);
 };
 
-var queryError = function(err) {
-    if(!err.msg) {
+const queryError = err => {
+    if (!err.msg) {
         err.msg = 'Error while performing Query.';
     }
     return e.printStackTrace(err);
 };
 
-var db = {
-    getMongoDb: getMongoDb,
-    connectionError: connectionError,
-    connectError: connectError,
-    queryError: queryError
+const db = {
+    getMongoDb,
+    connectionError,
+    connectError,
+    queryError
 };
 
-module.exports = db;
+export default db;
