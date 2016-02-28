@@ -5,7 +5,7 @@ import gulpLoadPlugins from 'gulp-load-plugins';
 
 const $ = gulpLoadPlugins();
 
-const srcFiles = ['src/**/*.js', '!src/public/**/*.js'];
+const srcServerFiles = ['src/**/*.js', '!src/public/**/*.js'];
 const srcClientFiles = ['src/public/**/*.js'];
 const srcHtml = ['src/public/**/*.html'];
 const srcEjs = ['src/views/**/*.ejs'];
@@ -17,7 +17,6 @@ const DEST_IMG = [`${DEST}images/**/*`, `!${DEST}images/**/*.ico`];
 
 const DEBUG = true;
 const SHOULD_RENAME = true;
-const PORT = 8080;
 
 const deleteFilesDirs = (destFdr) => {
     del.sync(destFdr);
@@ -36,7 +35,6 @@ const linter = (files) => {
  * @param files
  */
 const copier = (files) => {
-    deleteFilesDirs(files);
     gulp.src(files, { base: 'src' })
         .pipe($.plumber())
         .pipe(gulp.dest('build'));
@@ -52,15 +50,17 @@ gulp.task('nodemon', () => {
     });
 });
 
-gulp.task('jslint', () => {
-    return linter(srcFiles.concat(srcClientFiles));
+gulp.task('clean', () => {
+    deleteFilesDirs('build');
 });
 
-gulp.task('jslintSrc', () => {
-    return linter(srcFiles);
+gulp.task('eslint', ['eslintSrc', 'eslintClient']);
+
+gulp.task('eslintSrc', () => {
+    return linter(srcServerFiles);
 });
 
-gulp.task('jslintClient', () => {
+gulp.task('eslintClient', () => {
     return linter(srcClientFiles);
 });
 
@@ -157,8 +157,8 @@ gulp.task('strip-metadata', () => {
 });
 
 gulp.task('watch', () => {
-    gulp.watch(srcFiles, ['clearConsole', 'jslintSrc']);
-    gulp.watch(srcClientFiles, ['clearConsole', 'jslintClient', 'minify-js']);
+    gulp.watch(srcServerFiles, ['clearConsole', 'eslintSrc']);
+    gulp.watch(srcClientFiles, ['clearConsole', 'eslintClient', 'minify-js']);
     gulp.watch(srcHtml, ['minify-html']);
     gulp.watch(srcEjs, ['ejs']);
     gulp.watch(srcSass, ['styles']);
@@ -168,6 +168,6 @@ gulp.task('watch', () => {
 
 gulp.task(
     'default',
-    ['minify-html', 'images', 'ejs', 'strip-metadata', 'jslint', 'minify-js', 'styles', 'watch', 'nodemon']
+    ['clean', 'minify-html', 'images', 'ejs', 'strip-metadata', 'eslint', 'minify-js', 'styles', 'watch', 'nodemon']
 );
 export default gulp;

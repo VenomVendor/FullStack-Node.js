@@ -8,7 +8,7 @@ const constants = {
         VERSION: '1.0.0',
         ABOUT: 'Sample RESTful webservice demo using Node, Express & MongoDB'
     },
-    DEBUG: true
+    DEBUG: false
 };
 
 const strings = {
