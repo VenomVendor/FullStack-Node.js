@@ -12,7 +12,7 @@ import responseTime from 'response-time';
 import index from './routes/index';
 import demo from './routes/demo';
 import get from './routes/read';
-import constants from './utils/constants';
+import { constants, strings as S } from './utils/constants';
 
 const logDir = `${__dirname}/../logs/`;
 const accessLog = 'access.log';
@@ -47,7 +47,7 @@ const sendError = (req, res, status) => {
     const callback = req.query.callback || null;
     const data = {
         status: constants.ERROR,
-        message: http.STATUS_CODES[status] || constants.UNKNOWN_ERROR
+        message: http.STATUS_CODES[status] || S.UNKNOWN_ERROR
     };
     if (callback) {
         data.callback = callback;

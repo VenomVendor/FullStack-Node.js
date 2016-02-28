@@ -1,5 +1,6 @@
 import express from 'express';
-import constants from '../utils/constants';
+import { constants } from '../utils/constants';
+
 const router = new express.Router();
 
 router.all('/', (req, res) => {

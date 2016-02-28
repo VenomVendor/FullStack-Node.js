@@ -1,7 +1,8 @@
 import express from 'express';
 import dbs from '../controller/dbhandler';
 import ai from '../model/ai';
-import constants from '../utils/constants';
+import { constants } from '../utils/constants';
+
 const router = new express.Router();
 const ObjectID = require('mongodb').ObjectID;
 
@@ -33,7 +34,7 @@ const extractReqParams = (req, filter) => {
     }
 };
 
-const fetchFromDb = dbPrams => {
+const fetchFromDb = (dbPrams) => {
     const res = dbPrams.res;
     const filter = dbPrams.filter;
     const offset = dbPrams.offset;
@@ -43,12 +44,14 @@ const fetchFromDb = dbPrams => {
     dbs.getMongoDb((err, db) => {
         if (err) {
             res.json(dbs.connectionError(err));
+            return;
         }
 
         const collection = db.collection('data');
 
         if (collection === null) {
             res.json(dbs.queryError('Unknown Collection.'));
+            return;
         }
 
         collection.stats((_err, _stat) => {
@@ -61,6 +64,7 @@ const fetchFromDb = dbPrams => {
             collection.find(filter).skip(offset).limit(limit).toArray((er, docs) => {
                 if (er) {
                     res.json(dbs.queryError(er));
+                    return;
                 }
                 const data = {
                     status: constants.SUCCESS,

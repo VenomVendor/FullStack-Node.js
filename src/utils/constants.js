@@ -1,15 +1,18 @@
 const constants = {
+    ERROR: 'error',
+    MESSAGE: 'message',
     STATUS: 'status',
     SUCCESS: 'success',
-    ERROR: 'error',
-    UNKNOWN_ERROR: 'Unknown Error',
-    MESSAGE: 'message',
     API: {
         _VERSION: 'v1',
         VERSION: '1.0.0',
         ABOUT: 'Sample RESTful webservice demo using Node, Express & MongoDB'
     },
-    DEBUG: false
+    DEBUG: true
 };
 
-export default constants;
+const strings = {
+    UNKNOWN_COLLECTION: 'Unknown Collection.',
+    UNKNOWN_ERROR: 'Unknown Error.'
+};
+export { constants, strings };
