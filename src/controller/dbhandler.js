@@ -1,8 +1,9 @@
 const MongoClient = require('mongodb').MongoClient;
 import e from './exceptions';
+import { mongo } from '../utils/config';
 
-const getMongoDb = callback => {
-    MongoClient.connect('mongodb://127.0.0.1:27017/weather', (err, db) => {
+const getMongoDb = (callback) => {
+    MongoClient.connect(mongo.URL, (err, db) => {
         try {
             callback(err, db);
         } catch (exception) {
@@ -11,25 +12,29 @@ const getMongoDb = callback => {
     });
 };
 
-const connectionError = err => {
-    if (!err.msg) {
-        err.msg = 'Error while creating connection.';
+const readError = (err, _errMsg) => {
+    let __err;
+    if (err.msg) {
+        __err = err;
+    } else {
+        __err = {
+            msg: typeof err === 'string' ? err : _errMsg
+        };
     }
-    return e.printStackTrace(err);
+    return e.printStackTrace(__err);
+};
+
+/* eslint arrow-body-style: 0 */
+const connectionError = err => {
+    return readError(err, 'Error while creating connection.');
 };
 
 const connectError = err => {
-    if (!err.msg) {
-        err.msg = 'Error while connecting.';
-    }
-    return e.printStackTrace(err);
+    return readError(err, 'Error while connecting.');
 };
 
 const queryError = err => {
-    if (!err.msg) {
-        err.msg = 'Error while performing Query.';
-    }
-    return e.printStackTrace(err);
+    return readError(err, 'Error while performing Query.');
 };
 
 const db = {

@@ -1,10 +1,14 @@
 import express from 'express';
+import mongodb from 'mongodb';
 import dbs from '../controller/dbhandler';
 import ai from '../model/ai';
-import { constants } from '../utils/constants';
+import { mongo } from '../utils/config';
+import { constants, strings as S } from '../utils/constants';
+import Helper from '../utils/helpers';
 
 const router = new express.Router();
-const ObjectID = require('mongodb').ObjectID;
+const ObjectID = mongodb.ObjectID;
+const helper = new Helper();
 
 const extractReqParams = (req, filter) => {
     const temp = req.query.temp || '';
@@ -14,24 +18,25 @@ const extractReqParams = (req, filter) => {
     const pressureStation = req.query.pressureStation || '';
     const pressureSea = req.query.pressureSea || '';
 
-    if (temp && !temp.isTooEmpty()) {
-        filter.Temperature = ai.getConditionalKey(temp);
+    if (temp && !helper.isTooEmpty(temp)) {
+        filter[mongo.KEYS.Temperature] = ai.getConditionalKey(temp);
     }
-    if (humid && !humid.isTooEmpty()) {
-        filter.Humidity = ai.getConditionalKey(humid);
+    if (humid && !helper.isTooEmpty(humid)) {
+        filter[mongo.KEYS.Humidity] = ai.getConditionalKey(humid);
     }
-    if (windSpeed && !windSpeed.isTooEmpty()) {
-        filter['Wind Speed'] = ai.getConditionalKey(windSpeed);
+    if (windSpeed && !helper.isTooEmpty(windSpeed)) {
+        filter[mongo.KEYS.WindSpeed] = ai.getConditionalKey(windSpeed);
     }
-    if (windDir && !windDir.isTooEmpty()) {
-        filter['Wind Direction'] = ai.getConditionalKey(windDir);
+    if (windDir && !helper.isTooEmpty(windDir)) {
+        filter[mongo.KEYS.WindDirection] = ai.getConditionalKey(windDir);
     }
-    if (pressureStation && !pressureStation.isTooEmpty()) {
-        filter['Station Pressure'] = ai.getConditionalKey(pressureStation);
+    if (pressureStation && !helper.isTooEmpty(pressureStation)) {
+        filter[mongo.KEYS.StationPressure] = ai.getConditionalKey(pressureStation);
     }
-    if (pressureSea && !pressureSea.isTooEmpty()) {
-        filter['Sea Level Pressure'] = ai.getConditionalKey(pressureSea);
+    if (pressureSea && !helper.isTooEmpty(pressureSea)) {
+        filter[mongo.KEYS.SeaLevelPressure] = ai.getConditionalKey(pressureSea);
     }
+    return filter;
 };
 
 const fetchFromDb = (dbPrams) => {
@@ -43,22 +48,15 @@ const fetchFromDb = (dbPrams) => {
 
     dbs.getMongoDb((err, db) => {
         if (err) {
-            res.json(dbs.connectionError(err));
+            res.status(500).json(dbs.connectionError(err));
             return;
         }
-
-        const collection = db.collection('data');
-
-        if (collection === null) {
-            res.json(dbs.queryError('Unknown Collection.'));
-            return;
-        }
+        const collection = db.collection(mongo.COLLECTION);
 
         collection.stats((_err, _stat) => {
-            let stat = _stat;
-            if (stat === null) {
-                stat = {};
-                stat.count = -1;
+            if (_stat === undefined || _stat === null) {
+                res.status(500).json(dbs.queryError(S.UNKNOWN_COLLECTION));
+                return;
             }
 
             collection.find(filter).skip(offset).limit(limit).toArray((er, docs) => {
@@ -68,7 +66,7 @@ const fetchFromDb = (dbPrams) => {
                 }
                 const data = {
                     status: constants.SUCCESS,
-                    total: stat.count,
+                    total: _stat.count,
                     size: docs.length,
                     result: docs
                 };
@@ -89,7 +87,7 @@ router.get('/weather', (req, res) => {
     const limit = params.limit;
     const offset = params.offset;
     const callback = params.callback;
-    const filter = {};
+    let filter = {};
     const id = req.query.id || '';
     const day = req.query.day || 0;
     const state = req.query.state || '';
@@ -97,27 +95,27 @@ router.get('/weather', (req, res) => {
     const time = req.query.time || '';
     const airport = req.query.airport || '';
 
-    if (!id.isTooEmpty()) {
+    if (!helper.isTooEmpty(id)) {
         if (id.trim().length === 24) {
-            filter._id = new ObjectID(id);
+            filter[mongo.KEYS._id] = new ObjectID(id);
         } else {
-            filter._id = new ObjectID('000000000000000000000000');
+            filter[mongo.KEYS._id] = new ObjectID('000000000000000000000000');
         }
     }
 
     if (day) {
-        filter.Day = ai.getConditionalKey(day);
+        filter[mongo.KEYS.Day] = ai.getConditionalKey(day);
     }
-    if (time && !time.isTooEmpty()) {
-        filter.Time = ai.getConditionalKey(time);
+    if (time && !helper.isTooEmpty(time)) {
+        filter[mongo.KEYS.Time] = ai.getConditionalKey(time);
     }
-    if (state && !state.isTooEmpty()) {
-        filter.State = state;
+    if (state && !helper.isTooEmpty(state)) {
+        filter[mongo.KEYS.State] = state;
     }
-    if (airport && !airport.isTooEmpty()) {
-        filter.Airport = airport;
+    if (airport && !helper.isTooEmpty(airport)) {
+        filter[mongo.KEYS.Airport] = airport;
     }
-    extractReqParams(req, filter);
+    filter = extractReqParams(req, filter);
 
     const dbPrams = {
         res,
