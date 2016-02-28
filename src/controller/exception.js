@@ -1,7 +1,7 @@
-import { constants } from '../utils/constants';
 import util from 'util';
+import { constants } from '../utils/constants';
 
-const exceptions = {
+class Exception {
     printStackTrace(err) {
         Object.keys(err).forEach(ele => {
             util.debuglog(err[ele]);
@@ -14,6 +14,6 @@ const exceptions = {
             message: err.errmsg || err.msg
         };
     }
-};
+}
 
-export default exceptions;
+export default Exception;

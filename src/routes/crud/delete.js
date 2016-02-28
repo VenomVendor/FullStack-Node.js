@@ -1,11 +1,11 @@
 import express from 'express';
-import Dummy from './dummy';
+import Dummy from '../dummy';
 
 const router = new express.Router();
 
-/* demo. */
+/* delete. */
 router.all('/', (req, res) => {
-    const dummy = new Dummy('demo');
+    const dummy = new Dummy('Delete');
     dummy.getData(res);
 });
 

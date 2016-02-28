@@ -1,4 +1,4 @@
-const mongo = {
+const mongoConfig = {
     DB: 'weather',
     COLLECTION: 'data',
     HOST: '127.0.0.1',
@@ -18,11 +18,11 @@ const mongo = {
     }
 };
 
-const url = `mongodb://${mongo.HOST}:${mongo.PORT}/${mongo.DB}`;
-mongo.URL = url;
+const url = `mongodb://${mongoConfig.HOST}:${mongoConfig.PORT}/${mongoConfig.DB}`;
+mongoConfig.URL = url;
 
 const config = {
-    MONGO: mongo
+    MONGO: mongoConfig
 };
 
-export { config, mongo };
+export { config, mongoConfig };
