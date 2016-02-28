@@ -25,19 +25,6 @@ const PORT = 3030;
 /* current date */
 logger.date = () => new Date().getTime();
 
-/* eslint no-extend-native: 0 */
-Object.defineProperty(String.prototype, 'isEmpty', {
-    value() {
-        return this.length === 0;
-    }
-});
-
-Object.defineProperty(String.prototype, 'isTooEmpty', {
-    value() {
-        return this.isEmpty() || this.trim().length === 0;
-    }
-});
-
 const app = express();
 const start = process.hrtime();
 const accessLogStream = fs.createWriteStream(logDir + accessLog, {
@@ -122,16 +109,9 @@ app.all('/:filename/', (req, res) => {
     res.redirect(301, `${_version}/${req.params.filename}`);
 });
 
-app.get(`${_version}/ejs/*/*`, (req, res) => {
+app.get(`${_version}/**/*`, (req, res) => {
     const url = req.url;
-    res.render('error', {
-        pageName: url
-    });
-});
-
-app.get(`${_version}/ejs/*`, (req, res) => {
-    const url = req.url;
-    res.render('index', {
+    res.status(404).render('error', {
         pageName: url
     });
 });
@@ -147,7 +127,10 @@ app.get(`${_version}/:filename`, (req, res) => {
             }
         });
     } else {
-        sendError(req, res, 404);
+        const url = req.url;
+        res.render('index', {
+            pageName: url
+        });
     }
 });
 /* **************** ROUTING ENDS ***************** */
