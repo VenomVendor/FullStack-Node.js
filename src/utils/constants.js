@@ -1,6 +1,4 @@
-'use strict';
-
-var constants = {
+const constants = {
     STATUS: 'status',
     SUCCESS: 'success',
     ERROR: 'error',
@@ -14,4 +12,4 @@ var constants = {
     DEBUG: false
 };
 
-module.exports = constants;
+export default constants;

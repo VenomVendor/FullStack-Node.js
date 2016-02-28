@@ -1,14 +1,12 @@
-'use strict';
+import constants from '../utils/constants';
+import util from 'util';
 
-var constants = require('../utils/constants');
-var util = require('util');
-
-var exceptions = {
-    printStackTrace: function(err) {
-        Object.keys(err).forEach(function(ele) {
+const exceptions = {
+    printStackTrace(err) {
+        Object.keys(err).forEach(ele => {
             util.debuglog(err[ele]);
         });
-        if(constants.DEBUG) {
+        if (constants.DEBUG) {
             throw err;
         }
         return {
@@ -18,4 +16,4 @@ var exceptions = {
     }
 };
 
-module.exports = exceptions;
+export default exceptions;
