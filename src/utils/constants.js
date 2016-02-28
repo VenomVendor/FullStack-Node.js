@@ -15,4 +15,5 @@ const strings = {
     UNKNOWN_COLLECTION: 'Unknown Collection.',
     UNKNOWN_ERROR: 'Unknown Error.'
 };
+
 export { constants, strings };

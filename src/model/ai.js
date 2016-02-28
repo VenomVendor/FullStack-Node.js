@@ -2,15 +2,15 @@
  * Created by VenomVendor on 22-Jun-2015.
  */
 const radix = 10;
-let ai = {};
-ai = {
+
+class AI {
     getLimit(limit) {
         return isNaN(limit) || parseInt(limit, radix) < 1 ? 100 : parseInt(limit, radix);
-    },
+    }
 
     getOffset(offset) {
         return isNaN(offset) || parseInt(offset, radix) < 1 ? 0 : parseInt(offset, radix);
-    },
+    }
 
     nextOffset(count, offset, limit) {
         const off = parseInt(offset, radix);
@@ -22,16 +22,16 @@ ai = {
             newOffset = off + lim;
         }
         return newOffset;
-    },
+    }
 
     stripParams(req) {
         // req.body, or req.query
         return {
-            limit: ai.getLimit(req.query.limit),
-            offset: ai.getOffset(req.query.offset),
+            limit: this.getLimit(req.query.limit),
+            offset: this.getOffset(req.query.offset),
             callback: req.query.callback || null
         };
-    },
+    }
 
     getConditionalKey(val) {
         let ret;
@@ -49,6 +49,6 @@ ai = {
         }
         return ret;
     }
-};
+}
 
-export default ai;
+export default AI;
