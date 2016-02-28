@@ -22,11 +22,12 @@ const deleteFilesDirs = (destFdr) => {
     del.sync(destFdr);
 };
 
+/* eslint arrow-body-style: 0 */
 const linter = (files) => {
     return gulp.src(files)
         .pipe($.eslint())
         .pipe($.eslint.format())
-        .pipe($.eslint.failOnError())
+        .pipe($.eslint.failOnError());
 };
 
 /**
@@ -40,9 +41,16 @@ const copier = (files) => {
         .pipe(gulp.dest('build'));
 };
 
+/**
+ * es-lint gulpfile.js
+ */
+gulp.task('js-self-lint', () => {
+    return linter(['*.js']);
+});
+
 gulp.task('nodemon', () => {
     $.nodemon({
-        script: 'src/app.js'
+        script: 'server.js'
     }).on('start', () => {
         console.log('Starting...');
     }).on('restart', () => {
@@ -163,11 +171,12 @@ gulp.task('watch', () => {
     gulp.watch(srcEjs, ['ejs']);
     gulp.watch(srcSass, ['styles']);
     gulp.watch(srcImg, ['images']);
-    gulp.watch(DEST_IMG, ['strip-metadata'])
+    gulp.watch(DEST_IMG, ['strip-metadata']);
 });
 
 gulp.task(
     'default',
-    ['clean', 'minify-html', 'images', 'ejs', 'strip-metadata', 'eslint', 'minify-js', 'styles', 'watch', 'nodemon']
+    ['js-self-lint', 'clean', 'minify-html', 'images', 'ejs', 'strip-metadata', 'eslint', 'minify-js', 'styles',
+        'watch', 'nodemon']
 );
 export default gulp;

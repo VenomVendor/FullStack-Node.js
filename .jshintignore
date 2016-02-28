@@ -1,2 +1,2 @@
-build/public/javascripts/min/*.js
+build
 node_modules
