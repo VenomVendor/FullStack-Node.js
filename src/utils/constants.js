@@ -1,11 +1,8 @@
-'use strict';
-
-var constants = {
+const constants = {
+    ERROR: 'error',
+    MESSAGE: 'message',
     STATUS: 'status',
     SUCCESS: 'success',
-    ERROR: 'error',
-    UNKNOWN_ERROR: 'Unknown Error',
-    MESSAGE: 'message',
     API: {
         _VERSION: 'v1',
         VERSION: '1.0.0',
@@ -14,4 +11,8 @@ var constants = {
     DEBUG: false
 };
 
-module.exports = constants;
+const strings = {
+    UNKNOWN_COLLECTION: 'Unknown Collection.',
+    UNKNOWN_ERROR: 'Unknown Error.'
+};
+export { constants, strings };

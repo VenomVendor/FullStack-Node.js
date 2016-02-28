@@ -1,26 +1,31 @@
-'use strict';
-
 /**
  * Created by VenomVendor on 22-Jun-2015.
  */
-
-var ai = {
-    getLimit: function(limit) {
-        return isNaN(limit) ? 100 : parseInt(limit) < 1 ? 100 : parseInt(limit);
+const radix = 10;
+let ai = {};
+ai = {
+    getLimit(limit) {
+        return isNaN(limit) || parseInt(limit, radix) < 1 ? 100 : parseInt(limit, radix);
     },
 
-    getOffset: function(offset) {
-        return isNaN(offset) ? 0 : parseInt(offset) < 1 ? 0 : parseInt(offset);
+    getOffset(offset) {
+        return isNaN(offset) || parseInt(offset, radix) < 1 ? 0 : parseInt(offset, radix);
     },
 
-    nextOffset: function(count, offset, limit) {
-        var off = parseInt(offset, 10),
-            lim = parseInt(limit, 10);
-        return count < lim ? count === 0 ? count : count + off : off + lim;
+    nextOffset(count, offset, limit) {
+        const off = parseInt(offset, radix);
+        const lim = parseInt(limit, radix);
+        let newOffset;
+        if (count < lim) {
+            newOffset = count === 0 ? count : count + off;
+        } else {
+            newOffset = off + lim;
+        }
+        return newOffset;
     },
 
-    stripParams: function(req) {
-        //req.body, or req.query
+    stripParams(req) {
+        // req.body, or req.query
         return {
             limit: ai.getLimit(req.query.limit),
             offset: ai.getOffset(req.query.offset),
@@ -28,17 +33,17 @@ var ai = {
         };
     },
 
-    getConditionalKey: function(val) {
-        var ret;
-        var seperator = val.search('~');
-        if(seperator < 0) {
+    getConditionalKey(val) {
+        let ret;
+        const seperator = val.search('~');
+        if (seperator < 0) {
             ret = parseFloat(val);
         } else {
-            var condition = val.substr(0, seperator);
-            if(condition === 'gt' || condition === 'lt' || condition === 'gte' || condition === 'lte') {
-                var parsedVal = parseFloat(val.substring(val.search('~') + 1));
-                if(!isNaN(parsedVal)) {
-                    ret = {['$' + condition]: parsedVal};
+            const condition = val.substr(0, seperator);
+            if (condition === 'gt' || condition === 'lt' || condition === 'gte' || condition === 'lte') {
+                const parsedVal = parseFloat(val.substring(val.search('~') + 1));
+                if (!isNaN(parsedVal)) {
+                    ret = { [`$${condition}`]: parsedVal };
                 }
             }
         }
@@ -46,4 +51,4 @@ var ai = {
     }
 };
 
-module.exports = ai;
+export default ai;

@@ -1,11 +1,10 @@
-'use strict';
+import express from 'express';
+import { constants } from '../utils/constants';
 
-var express = require('express');
-var router = express.Router();
-var constants = require('../utils/constants');
+const router = new express.Router();
 
-router.all('/', function(req, res) {
-    var data = {
+router.all('/', (req, res) => {
+    const data = {
         status: constants.SUCCESS,
         version: constants.API.VERSION
     };
@@ -13,10 +12,10 @@ router.all('/', function(req, res) {
 });
 
 // define the about route
-router.get('/about', function(req, res, next) {
+router.get('/about', (req, res, next) => {
     next();
-}, function(req, res) {
-    var data = {
+}, (req, res) => {
+    const data = {
         status: constants.SUCCESS,
         version: constants.API.VERSION,
         about: constants.API.ABOUT
@@ -24,4 +23,4 @@ router.get('/about', function(req, res, next) {
     res.json(data);
 });
 
-module.exports = router;
+export default router;
