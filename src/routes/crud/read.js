@@ -1,5 +1,5 @@
 import express from 'express';
-import git from 'git-rev-sync';
+import Hash from '../../utils/hash';
 import QueryDB from '../../model/querydb';
 import { mongoConfig } from '../../utils/config';
 
@@ -26,7 +26,7 @@ router.get('/weather', (req, res) => {
 
     query.fetchFromDb(dbPrams, (err, response) => {
         if (responseHelper(req, res, err, response)) {
-            res.render('weather', { title: response.title, docs: response.result, hash: `-${git.short()}` });
+            res.render('weather', { title: response.title, docs: response.result, hash: `-${Hash.short()}` });
         }
     });
 });
@@ -42,7 +42,7 @@ router.get('/user*', (req, res) => {
 
     query.fetchFromDb(dbPrams, (err, response) => {
         if (responseHelper(req, res, err, response)) {
-            res.render('users', { title: response.title, docs: response.result, hash: `-${git.short()}` });
+            res.render('users', { title: response.title, docs: response.result, hash: `-${Hash.short()}` });
         }
     });
 });

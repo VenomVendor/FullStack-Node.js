@@ -5,7 +5,6 @@ import cookieParser from 'cookie-parser';
 import express from 'express';
 import favicon from 'serve-favicon';
 import fs from 'fs';
-import git from 'git-rev-sync';
 import http from 'http';
 import logger from 'morgan';
 import path from 'path';
@@ -16,6 +15,7 @@ import read from './routes/crud/read';
 import update from './routes/crud/update';
 import del from './routes/crud/delete';
 import demo from './routes/demo';
+import Hash from './utils/hash';
 import { constants, strings as S } from './utils/constants';
 
 const logDir = `${__dirname}/../logs/`;
@@ -119,12 +119,12 @@ app.all(`${revision}/*.html`, (req, res) => {
         if (err === null) {
             res.render(path.join(buildDir, 'public', 'htmls', fileName), {
                 title: `From ${fileName}`,
-                hash: `-${git.short()}`
+                hash: `-${Hash.short()}`
             });
         } else {
             res.render(path.join(buildDir, 'public', 'htmls', 'non-index.html'), {
                 title: 'From non-index.html',
-                hash: `-${git.short()}`
+                hash: `-${Hash.short()}`
             });
         }
     });
