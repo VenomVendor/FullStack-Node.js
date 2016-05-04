@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+    <% include includes/meta.ejs %>
+    <% include includes/styles.ejs %>
+</head>
+<body class="container">
+
+<header>
+    <% include includes/header.ejs %>
+</header>
+<section>
+    <% docs.forEach(function(weather) { %>
+        <%- include('includes/cards/weather', { weather }); %>
+    <% }); %>
+</section>
+<footer>
+    <% include includes/footer.ejs %>
+</footer>
+<% include includes/scripts.ejs %>
+</body>
+</html>

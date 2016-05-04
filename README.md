@@ -8,7 +8,7 @@
  - Node https://nodejs.org/en/download/ / https://docs.npmjs.com/getting-started/installing-node
  - MongoDB https://docs.mongodb.org/manual/installation/
 
-# {}
+# {Installation}
 <pre>
 git clone https://github.com/VenomVendor/RESTful-Node.git
 cd RESTful-Node
@@ -16,17 +16,11 @@ npm i
 gulp
 </pre>
 
-# Install dependencies
-<pre>npm i</pre>
-
 # Start Mongo Server
 <pre>mongod</pre>
 
-# Import MongoDB dump.
-<pre>
-cd dump
-mongoimport --type csv --headerline weather_data.csv -d weather -c data
-</pre>
+# Import MongoDB dump
+<a href="dump">Import MongoDB dump</a>
 
 # Start Server
 <pre>gulp</pre>
@@ -41,34 +35,56 @@ mongoimport --type csv --headerline weather_data.csv -d weather -c data
  - http://localhost:3030/v1/
  - http://localhost:3030/v1/demo
  - http://localhost:3030/v1/about
+
+# Weather APIs
  - http://localhost:3030/v1/get/weather?[params]
 
-<pre>http://localhost:3030/v1/get/weather?limit=0&offset=0&state=Vermont&temperature=lte~39&windSpeed=gt~4.00000&windDir=lt~180&humidity=gte~60</pre>
+<pre>http://localhost:3030/v1/get/weather?limit=20&offset=0&state=Vermont&temp=lte~39&windSpeed=gt~4.00000&windDir=lt~180&humidity=gte~60</pre>
  
-# params
-param (case-sensitive) | Type | Default | Description
+# Weather Params
+param<br>(case-sensitive) | Type | Default | Description
 ------ | ---- | ------- | -----------
+type | string | html | `json`/`html` Output type.
 limit | integer | 100 | Max results.
 offset | integer | 0 | Skip first {offset} results.
 callback | string/boolean/integer/json | - | callback for reference.
-id | hexa  | - | Hexa-decimal Object(_id) / id
+_id | hexa  | - | Hexa-decimal Object(_id) / id
 state | string | - | State
 airport | string | - | Airport Name
 day | integer | - | gt~ / gte~ / lt~ / lte~ `ex: gt~4`
 time | integer | - | gt~ / gte~ / lt~ / lte~ `ex: gte~4`
 temp  | integer | - | gt~ / gte~ / lt~ / lte~ `ex: lt~4`
-humid | integer | - | gt~ / gte~ / lt~ / lte~ `ex: lte~4`
+humidity | integer | - | gt~ / gte~ / lt~ / lte~ `ex: lte~4`
 windSpeed | integer | - | gt~ / gte~ / lt~ / lte~ `ex: 4`
 windDir | integer | - | gt~ / gte~ / lt~ / lte~ `ex: 4.0`
 pressureStation | integer | - | gt~ / gte~ / lt~ / lte~ `ex: 04`
 pressureSea | integer | - | gt~ / gte~ / lt~ / lte~ `ex: 40`
 
+# User APIs
+ - http://localhost:3030/v1/get/user(*)?[params]
+
+<pre>http://localhost:3030/v1/get/users?limit=4&offset=0&gender=queen</pre>
+ 
+# User Params
+param<br>(case-sensitive) | Type | Default | Description
+------ | ---- | ------- | -----------
+type | string | html | `json`/`html` Output type.
+limit | integer | 100 | Max results.
+offset | integer | 0 | Skip first {offset} results.
+callback | string/boolean/integer/json | - | callback for reference.
+_id | hexa  | - | Hexa-decimal Object(_id) / id
+id | integer  | - | N/A
+firstName | string | - | N/A
+company | string | - | N/A
+email | string | - | N/A
+gender | string | - | `king`/`queen`
+g | string | - | `king`/`queen`
+
 # HTML
-    - http://localhost:3030/v1/(a|b|c|d|RANDOM|*).html
+    - http://localhost:3030/v1/(a|RANDOM|*).html
 
 # TODO
-    - Move to ES6.
-    - Cache DB.
+    - Move to ES6 Promise.
 
 # License
     Copyright© 2016 VenomVendor <info@VenomVendor.com>

@@ -1,6 +1,6 @@
 import bodyParser from 'body-parser';
 import compression from 'compression';
-import cons from 'consolidate';
+import swig from 'swig';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import favicon from 'serve-favicon';
@@ -11,18 +11,19 @@ import path from 'path';
 import responseTime from 'response-time';
 import index from './routes/index';
 import post from './routes/crud/create';
-import get from './routes/crud/read';
+import read from './routes/crud/read';
 import update from './routes/crud/update';
 import del from './routes/crud/delete';
 import demo from './routes/demo';
+import Hash from './utils/hash';
 import { constants, strings as S } from './utils/constants';
 
 const logDir = `${__dirname}/../logs/`;
 const accessLog = 'access.log';
 const loggerFormat = '[:date] [:method :status HTTP/:http-version] - :url';
 
-const _version = `/${constants.API._VERSION}`;
-const _dirname = path.join(__dirname, '../build');
+const revision = `/${constants.API.REVISON}`;
+const buildDir = path.join(__dirname, '../build');
 const PORT = 3030;
 
 /* current date */
@@ -42,7 +43,7 @@ const sendError = (req, res, status) => {
     if (callback) {
         data.callback = callback;
     }
-    res.set('content-type');
+    res.set('content-type', 'application/json');
     res.status(status);
     res.json(data);
     res.end();
@@ -53,12 +54,11 @@ const sendError = (req, res, status) => {
 app.set('port', PORT);
 // view engine setup
 app.set('view engine', 'ejs');
-app.set('views', path.join(_dirname, 'views'));
-app.engine('html', cons.swig);
+app.set('view cache', false);
+app.set('views', path.join(__dirname, 'views'));
 
-app.use(express.static(path.join(_dirname, 'public')));
-app.use(favicon(`${_dirname}/public/images/favicon-mongo.ico`));
-app.use(logger(loggerFormat, { stream: accessLogStream }));
+swig.setDefaults({ cache: false });
+app.engine('html', swig.renderFile);
 
 // parse some custom thing into a Buffer
 app.use(bodyParser.raw({
@@ -95,54 +95,60 @@ console.log(process.hrtime(start));
 
 /* ************ SERVE STATIC START **************** */
 
-app.use('/js', express.static(path.join(_dirname, 'public', 'javascripts')));
-app.use('/css', express.static(path.join(_dirname, 'public', 'stylesheets')));
-app.use('/img', express.static(path.join(_dirname, 'public', 'images')));
-app.use('', express.static(path.join(_dirname, 'public', 'htmls')));
+app.use(express.static(path.join(buildDir, 'public')));
+app.use('/js', express.static(path.join(buildDir, 'public', 'javascripts')));
+app.use('/css', express.static(path.join(buildDir, 'public', 'stylesheets')));
+app.use('/img', express.static(path.join(buildDir, 'public', 'images')));
+app.use(favicon(path.join(buildDir, 'public', 'images', 'favicon.ico')));
 
-app.use(`${_version}/`, index);
-app.use(`${_version}/post/`, post);
-app.use(`${_version}/get/`, get);
-app.use(`${_version}/update/`, update);
-app.use(`${_version}/del/`, del);
-app.use(`${_version}/demo/`, demo);
-
+app.use(logger(loggerFormat, { stream: accessLogStream }));
 /* ************* SERVE STATIC END ***************** */
+
+app.use(`${revision}/`, index);
+app.use(`${revision}/post/`, post);
+app.use(`${revision}/get/`, read);
+app.use(`${revision}/update/`, update);
+app.use(`${revision}/del/`, del);
+app.use(`${revision}/demo/`, demo);
 
 /* **************** ROUTING STARTS ***************** */
 
-app.all('/:filename/', (req, res) => {
-    res.redirect(301, `${_version}/${req.params.filename}`);
+app.all(`${revision}/*.html`, (req, res) => {
+    const fileName = path.basename(req.url);
+    fs.stat(path.join(buildDir, 'public', 'htmls', fileName), err => {
+        if (err === null) {
+            res.render(path.join(buildDir, 'public', 'htmls', fileName), {
+                title: `From ${fileName}`,
+                hash: `-${Hash.short()}`
+            });
+        } else {
+            res.render(path.join(buildDir, 'public', 'htmls', 'non-index.html'), {
+                title: 'From non-index.html',
+                hash: `-${Hash.short()}`
+            });
+        }
+    });
 });
 
-app.get(`${_version}/**/*`, (req, res) => {
+app.all('/*.html', (req, res) => {
+    res.redirect(301, `${revision}${req.url}`);
+});
+
+app.all(`${revision}/**/*`, (req, res) => {
     const url = req.url;
     res.status(404).render('error', {
         pageName: url
     });
 });
 
-app.get(`${_version}/:filename`, (req, res) => {
-    const fileName = req.params.filename;
-    if (fileName.endsWith('.html')) {
-        fs.stat(path.join(_dirname, 'public', 'htmls', fileName), err => {
-            if (err === null) {
-                res.sendFile(path.join(_dirname, 'public', 'htmls', fileName));
-            } else {
-                res.sendFile(path.join(_dirname, 'public', 'htmls', 'non-index.html'));
-            }
-        });
-    } else {
-        const url = req.url;
-        res.render('index', {
-            pageName: url
-        });
-    }
+app.all('/', (req, res) => {
+    res.redirect(301, `${revision}/`);
 });
+
 /* **************** ROUTING ENDS ***************** */
 
 /* ############### ERROR HANDLERS STARTS ############### */
-// Handler for internal server errors
+// Handler for internal server errors - 500
 const errorHandler = (err, req, res, next) => {
     if (app.get('env') === 'development') {
         console.error(err.message);
@@ -153,8 +159,9 @@ const errorHandler = (err, req, res, next) => {
 };
 
 // catch 404 and forward to error handler.
-const notFound = (req, res) => {
+const notFound = (req, res, next) => {
     sendError(req, res, 404);
+    next();
 };
 
 app.use(errorHandler);
@@ -162,8 +169,6 @@ app.use(errorHandler);
 // Should be added last.
 app.use(notFound);
 /* ############### ERROR HANDLERS END ############### */
-
-export default app;
 
 /* ###############SERVER############### */
 const server = http.createServer(app);
@@ -176,7 +181,9 @@ server.listen(app.get('port'), err => {
     // var networkInterfaces = os.networkInterfaces();
     const ipAddress = 'localhost';
     console.log(
-        '\x1b[31m',
+        '\x1b[36m',
         `\n Server running at\thttp://${ipAddress}:${app.get('port')}\n`
     );
 });
+
+export default app;

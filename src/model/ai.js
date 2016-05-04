@@ -24,16 +24,19 @@ class AI {
         return newOffset;
     }
 
-    stripParams(req) {
+    stripParams(query) {
         // req.body, or req.query
         return {
-            limit: this.getLimit(req.query.limit),
-            offset: this.getOffset(req.query.offset),
-            callback: req.query.callback || null
+            limit: this.getLimit(query.limit),
+            offset: this.getOffset(query.offset),
+            callback: query.callback || null
         };
     }
 
     getConditionalKey(val) {
+        if (!val) {
+            return val;
+        }
         let ret;
         const seperator = val.search('~');
         if (seperator < 0) {
@@ -48,6 +51,18 @@ class AI {
             }
         }
         return ret;
+    }
+
+    getGender(val) {
+        if (!val) {
+            return val;
+        }
+        if (val.toLocaleLowerCase() === 'king') {
+            return 'Male';
+        } else if (val.toLocaleLowerCase() === 'queen') {
+            return 'Female';
+        }
+        return null;
     }
 }
 

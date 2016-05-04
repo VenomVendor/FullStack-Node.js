@@ -1,6 +1,7 @@
 const mongoConfig = {
-    DB: 'weather',
-    COLLECTION: 'data',
+    DB: 'fullstack',
+    COLLECTION_WEATHER: 'weather',
+    COLLECTION_USER: 'users',
     HOST: '127.0.0.1',
     PORT: '27017',
     KEYS: {
@@ -14,7 +15,12 @@ const mongoConfig = {
         WindSpeed: 'Wind Speed',
         WindDirection: 'Wind Direction',
         StationPressure: 'Station Pressure',
-        SeaLevelPressure: 'Sea Level Pressure'
+        SeaLevelPressure: 'Sea Level Pressure',
+        FirstName: 'first_name',
+        Company: 'company',
+        Id: 'id',
+        Email: 'email',
+        Gender: 'gender'
     }
 };
 
