@@ -5,6 +5,7 @@ build
 ncp-debug.log
 npm-debug.log
 .idea
+/src/utils/hash.js
 
 # Logs
 logs
