@@ -1,7 +1,7 @@
 {
   "name": "full-stack",
   "version": "1.0.0",
-  "description": "Node with express, ejs & MongoDB",
+  "description": "FullStack & RESTful webservices with Node, Express, ejs & MongoDB",
   "main": "app.js",
   "repository": {
     "type": "git",

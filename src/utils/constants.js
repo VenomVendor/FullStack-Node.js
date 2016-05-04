@@ -6,7 +6,7 @@ const constants = {
     API: {
         REVISON: 'v1',
         VERSION: '1.0.0',
-        ABOUT: 'Node with express, ejs & MongoDB'
+        ABOUT: 'FullStack & RESTful webservices with Node, Express, ejs & MongoDB'
     },
     DEBUG: false
 };
