@@ -4,9 +4,9 @@ const constants = {
     STATUS: 'status',
     SUCCESS: 'success',
     API: {
-        _VERSION: 'v1',
+        REVISON: 'v1',
         VERSION: '1.0.0',
-        ABOUT: 'Sample RESTful webservice demo using Node, Express & MongoDB'
+        ABOUT: 'Node with express, ejs & MongoDB'
     },
     DEBUG: false
 };

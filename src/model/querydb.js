@@ -1,48 +1,116 @@
-import { mongoConfig } from '../utils/config';
 import { constants, strings as S } from '../utils/constants';
 import DBHandler from '../controller/dbhandler';
 import ParamsExtractor from './paramsextractor';
+import AI from './ai';
 
 const dbs = new DBHandler();
 
 class QueryDB extends ParamsExtractor {
-    fetchFromDb(dbPrams) {
+    fetchFromDb(params, callback) {
         const filter = super.extractReqParams();
-        const res = dbPrams.res;
-        const offset = dbPrams.offset;
-        const limit = dbPrams.limit;
-        const callback = dbPrams.callback;
+
+        const ai = new AI();
+        const mParams = ai.stripParams(params.queryParams);
+        const limit = mParams.limit;
+        const offset = mParams.offset;
+        const cb = mParams.callback;
 
         dbs.getMongoDb((err, db) => {
             if (err) {
-                res.status(500).json(dbs.connectionError(err));
+                callback(err, {
+                    status: 500,
+                    error: dbs.connectionError(err)
+                });
                 return;
             }
-            const collection = db.collection(mongoConfig.COLLECTION);
+            const collection = db.collection(params.collName);
 
             collection.stats((_err, _stat) => {
                 if (_stat === undefined || _stat === null) {
-                    res.status(500).json(dbs.queryError(S.UNKNOWN_COLLECTION));
+                    callback(new Error(S.UNKNOWN_COLLECTION), {
+                        status: 500,
+                        error: dbs.queryError(S.UNKNOWN_COLLECTION)
+                    });
                     return;
                 }
 
-                collection.find(filter).skip(offset).limit(limit).toArray((er, docs) => {
-                    if (er) {
-                        res.json(dbs.queryError(er));
+                console.log(`\nfilter: ${JSON.stringify(filter)}`, `\nlimit: ${limit}`, `\noffset: ${offset}`);
+
+                collection.find({ title: { $type: 'string' } }).toArray((___err, titleData) => {
+                    if (___err) {
+                        callback(___err, {
+                            status: 500,
+                            error: dbs.queryError(___err)
+                        });
                         return;
                     }
-                    const data = {
-                        status: constants.SUCCESS,
-                        total: _stat.count,
-                        size: docs.length,
-                        result: docs
-                    };
 
-                    if (callback) {
-                        data.callback = callback;
+                    collection.find(filter).skip(offset).limit(limit).sort({ id: 1 }).toArray((__err, docs) => {
+                        if (__err) {
+                            callback(__err, {
+                                status: 500,
+                                error: dbs.queryError(__err)
+                            });
+                            return;
+                        }
+                        const data = {
+                            status: constants.SUCCESS,
+                            total: _stat.count,
+                            size: docs.length,
+                            title: titleData[0].title,
+                            result: docs
+                        };
+
+                        if (cb) {
+                            data.callback = cb;
+                        }
+                        callback(null, data);
+                    });
+                });
+            });
+        });
+    }
+
+    deleteById(params, callback) {
+        dbs.getMongoDb((err, db) => {
+            if (err) {
+                callback(err, { status: 500, error: dbs.connectionError(err) });
+                return;
+            }
+            const collection = db.collection(params.collName);
+
+            collection.stats((_err, _stat) => {
+                if (_stat === undefined || _stat === null) {
+                    callback(new Error(S.UNKNOWN_COLLECTION), {
+                        status: 500,
+                        error: dbs.queryError(S.UNKNOWN_COLLECTION)
+                    });
+                    return;
+                }
+                const filter = { id: parseInt(params.id, 10) };
+                console.log(filter);
+
+                collection.deleteOne(filter, (__err, results) => {
+                    if (__err) {
+                        callback(__err, { status: 500, error: dbs.queryError(__err) });
+                        return;
                     }
-                    res.json(data);
-                    db.close();
+                    console.log(results.result);
+
+                    const data = {};
+
+                    if (results.result.ok === 1 && results.result.n > 0) {
+                        data.status = constants.SUCCESS;
+                    } else {
+                        data.status = constants.ERROR;
+                        data.message = 'Unable to delete';
+                    }
+
+                    const cb = params.callback;
+                    if (cb) {
+                        data.callback = cb;
+                    }
+                    callback(null, data);
                 });
             });
         });

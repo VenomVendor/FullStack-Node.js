@@ -15,58 +15,60 @@ class ParamsExtractor {
     }
 
     extractReqParams() {
-        const id = this.query.id || '';
-        const day = this.query.day || '';
-        const state = this.query.state || '';
-        const time = this.query.time || '';
-        const airport = this.query.airport || '';
-        const temp = this.query.temp || '';
-        const humid = this.query.humid || '';
-        const windSpeed = this.query.windSpeed || '';
-        const windDir = this.query.windDir || '';
-        const pressureStation = this.query.pressureStation || '';
-        const pressureSea = this.query.pressureSea || '';
+        const q = this.query;
+        const _id = q._id || '';
+        const day = q.day || '';
+        const state = q.state || '';
+        const time = q.time || '';
+        const airport = q.airport || '';
+        const temp = q.temp || '';
+        const humid = q.humid || '';
+        const windSpeed = q.windSpeed || '';
+        const windDir = q.windDir || '';
+        const pressureStation = q.pressureStation || '';
+        const pressureSea = q.pressureSea || '';
+
+        const id = q.id || '';
+        const firstName = q.firstName || '';
+        const company = q.company || '';
+        const email = q.email || '';
+        const gender = q.gender || q.g || '';
 
         const filter = {};
 
-        if (!helper.isTooEmpty(id)) {
-            if (id.trim().length === 24) {
-                filter[column._id] = new ObjectID(id);
+        if (!helper.isTooEmpty(_id)) {
+            if (_id.trim().length === 24) {
+                filter[column._id] = new ObjectID(_id);
             } else {
                 filter[column._id] = new ObjectID('000000000000000000000000');
             }
         }
-        if (state && !helper.isTooEmpty(state)) {
-            filter[column.State] = state;
-        }
-        if (airport && !helper.isTooEmpty(airport)) {
-            filter[column.Airport] = airport;
-        }
-        if (day) {
-            filter[column.Day] = ai.getConditionalKey(day);
-        }
-        if (time && !helper.isTooEmpty(time)) {
-            filter[column.Time] = ai.getConditionalKey(time);
-        }
-        if (temp && !helper.isTooEmpty(temp)) {
-            filter[column.Temperature] = ai.getConditionalKey(temp);
-        }
-        if (humid && !helper.isTooEmpty(humid)) {
-            filter[column.Humidity] = ai.getConditionalKey(humid);
-        }
-        if (windSpeed && !helper.isTooEmpty(windSpeed)) {
-            filter[column.WindSpeed] = ai.getConditionalKey(windSpeed);
-        }
-        if (windDir && !helper.isTooEmpty(windDir)) {
-            filter[column.WindDirection] = ai.getConditionalKey(windDir);
-        }
-        if (pressureStation && !helper.isTooEmpty(pressureStation)) {
-            filter[column.StationPressure] = ai.getConditionalKey(pressureStation);
-        }
-        if (pressureSea && !helper.isTooEmpty(pressureSea)) {
-            filter[column.SeaLevelPressure] = ai.getConditionalKey(pressureSea);
-        }
-        return filter;
+        filter[column.State] = state;
+        filter[column.Airport] = airport;
+        filter[column.Day] = ai.getConditionalKey(day);
+        filter[column.Time] = ai.getConditionalKey(time);
+        filter[column.Temperature] = ai.getConditionalKey(temp);
+        filter[column.Humidity] = ai.getConditionalKey(humid);
+        filter[column.WindSpeed] = ai.getConditionalKey(windSpeed);
+        filter[column.WindDirection] = ai.getConditionalKey(windDir);
+        filter[column.StationPressure] = ai.getConditionalKey(pressureStation);
+        filter[column.SeaLevelPressure] = ai.getConditionalKey(pressureSea);
+
+        filter[column.Id] = parseInt(id, 10);
+        filter[column.FirstName] = firstName;
+        filter[column.Company] = company;
+        filter[column.Email] = email;
+        filter[column.Gender] = ai.getGender(gender);
+
+        const crushedFilter = {};
+        Object.keys(filter).forEach((key) => {
+            if (filter[key]) {
+                crushedFilter[key] = filter[key];
+            }
+        });
+
+        crushedFilter.id = { $type: 'int' };
+        return crushedFilter;
     }
 }
 

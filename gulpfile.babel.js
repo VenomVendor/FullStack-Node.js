@@ -1,22 +1,22 @@
-import gulp from 'gulp';
-import del from 'del';
 import console from 'better-console';
+import del from 'del';
+import git from 'git-rev-sync';
+import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 
-const $ = gulpLoadPlugins();
-
-const srcServerFiles = ['src/**/*.js', '!src/public/**/*.js'];
-const srcClientFiles = ['src/public/**/*.js'];
+const srcServerFiles = ['src/**/*.js', '!src/public/**/*.js', '!src/public/**/vendor/*.js'];
+const srcClientFiles = ['src/public/**/*.js', '!src/public/**/vendor/*.js'];
+const srcClientVendorFiles = ['src/public/**/vendor/*.js'];
 const srcHtml = ['src/public/**/*.html'];
-const srcEjs = ['src/views/**/*.ejs'];
 const srcSass = ['src/public/**/*.scss'];
-const srcImg = ['src/public/images/*'];
+const srcImg = ['src/public/images/**/*'];
 
 const DEST = 'build/public/';
 const DEST_IMG = [`${DEST}images/**/*`, `!${DEST}images/**/*.ico`];
 
-const DEBUG = true;
+const DEBUG = !true;
 const SHOULD_RENAME = true;
+const $ = gulpLoadPlugins({ DEBUG });
 
 const deleteFilesDirs = (destFdr) => {
     del.sync(destFdr);
@@ -103,7 +103,7 @@ gulp.task('minify-js', () => {
         .pipe($.babel())
         .pipe($.sourcemaps.write())
         .pipe(gulp.dest(DEST))
-        .pipe(SHOULD_RENAME ? $.rename({ suffix: '.min' }) : $.util.noop())
+        .pipe(SHOULD_RENAME ? $.rename({ suffix: `-${git.short()}.min` }) : $.util.noop())
         .pipe(gulp.dest(DEST))
         .pipe(DEBUG ? $.util.noop() : $.uglify())
         .pipe(gulp.dest(DEST));
@@ -114,7 +114,7 @@ gulp.task('styles', () => {
         .pipe($.plumber())
         .pipe($.sourcemaps.init())
         .pipe($.sass({
-            outputStyle: DEBUG ? 'expanded' : 'compressed',
+            outputStyle: 'expanded',
             sourceComments: DEBUG,
             sourceMap: DEBUG,
             sourceMapContents: DEBUG,
@@ -135,7 +135,7 @@ gulp.task('styles', () => {
         .pipe($.csscomb())
         .pipe(gulp.dest(DEST))
         .pipe(DEBUG ? $.util.noop() : $.cssnano())
-        .pipe(SHOULD_RENAME ? $.rename({ suffix: '.min' }) : $.util.noop())
+        .pipe(SHOULD_RENAME ? $.rename({ suffix: `-${git.short()}.min` }) : $.util.noop())
         .pipe(gulp.dest(DEST));
 });
 
@@ -143,17 +143,17 @@ gulp.task('clearConsole', () => {
     console.clear();
 });
 
-gulp.task('ejs', () => {
-    copier(srcEjs);
-});
-
 gulp.task('images', () => {
     copier(srcImg);
 });
 
+gulp.task('vendor-js', () => {
+    copier(srcClientVendorFiles);
+});
+
 gulp.task('strip-metadata', () => {
     gulp.src(DEST_IMG, { read: false })
-        .pipe($.shell(['exiftoolx -overwrite_original -all= <%= f(file.path) %>'], {
+        .pipe($.shell(['exiftool -overwrite_original -all= <%= f(file.path) %>'], {
             templateData: {
                 f: (s) => {
                     return s;
@@ -167,8 +167,8 @@ gulp.task('strip-metadata', () => {
 gulp.task('watch', () => {
     gulp.watch(srcServerFiles, ['clearConsole', 'eslintSrc']);
     gulp.watch(srcClientFiles, ['clearConsole', 'eslintClient', 'minify-js']);
+    gulp.watch(srcClientVendorFiles, ['vendor-js']);
     gulp.watch(srcHtml, ['minify-html']);
-    gulp.watch(srcEjs, ['ejs']);
     gulp.watch(srcSass, ['styles']);
     gulp.watch(srcImg, ['images']);
     gulp.watch(DEST_IMG, ['strip-metadata']);
@@ -176,7 +176,7 @@ gulp.task('watch', () => {
 
 gulp.task(
     'default',
-    ['js-self-lint', 'clean', 'minify-html', 'images', 'ejs', 'strip-metadata', 'eslint', 'minify-js', 'styles',
-        'watch', 'nodemon']
+    ['js-self-lint', 'clean', 'minify-html', 'images', 'vendor-js', 'strip-metadata', 'eslint', 'minify-js',
+        'styles', 'watch', 'nodemon']
 );
 export default gulp;

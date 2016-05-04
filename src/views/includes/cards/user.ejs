@@ -1,0 +1,59 @@
+<!-- Card widget -->
+<div class="card" data-id="<%= parseInt(user.id, 10) %>">
+
+    <!-- Face 2 -->
+    <div class="card-face face-2">
+        <!-- Back trigger -->
+        <button data-card-back="data-card-back" class="card-face__back-button">
+            <img src="/img/arrow_1.svg" width="19" height="19" draggable="false"/>
+        </button>
+
+        <button draggable="false" class="card-face__stats delete card-button">&#9003;</button>
+        <button draggable="false" class="card-face__stats edit card-button">&#9998;</button>
+
+        <!-- Settings Button -->
+        <img src="/img/cog.svg" width="17" height="17" draggable="false" class="card-face__settings-button"/>
+    </div>
+
+    <!-- Face 1 -->
+    <div class="card-face face-1">
+        <!-- Menu trigger -->
+        <button data-card-menu="data-card-menu" class="card-face__menu-button">
+            <img src="/img/dots_1.svg" width="5" height="23" draggable="false"/>
+        </button>
+
+        <!-- Avatar -->
+        <div class="card-face__avatar">
+            <!-- Bullet notification -->
+            <span class="card-face__bullet">2</span>
+            <!-- User avatar -->
+            <% if(user.gender === 'Male') { %>
+            <img src="/img/men/<%= parseInt(user.id, 10) % 99 ? parseInt(user.id, 10) % 99 : 0 %>.jpg" width="110"
+                 height="110" draggable="false"/>
+            <% } else{ %>
+            <img src="/img/women/<%= parseInt(user.id, 10) % 99 ? parseInt(user.id, 10) % 99 : 0 %>.jpg" width="110"
+                 height="110" draggable="false"/>
+            <% } %>
+
+        </div>
+
+        <!-- Name -->
+        <h2 class="card-face__name"><%= user.first_name %></h2>
+
+        <!-- Title -->
+        <span class="card-face__title"><%= user.company %></span>
+
+        <!-- Cart Footer -->
+        <div class="card-face-footer">
+            <a href="https://dribbble.com/VenomVendor" target="_blank" class="card-face__social">
+                <img src="/img/dribbble.svg" width="36" height="36" draggable="false"/>
+            </a>
+            <a href="https://www.behance.net/VenomVendor" target="_blank" class="card-face__social">
+                <img src="/img/beh.svg" width="36" height="36" draggable="false"/>
+            </a>
+            <a href="https://fb.com/VenomVendor" target="_blank" class="card-face__social">
+                <img src="/img/facebook_1.svg" width="36" height="36" draggable="false"/>
+            </a>
+        </div>
+    </div>
+</div>
