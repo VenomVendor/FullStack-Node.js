@@ -62,12 +62,12 @@ class ParamsExtractor {
 
         const crushedFilter = {};
         Object.keys(filter).forEach((key) => {
-            if (filter[key]) {
-                crushedFilter[key] = filter[key];
+            const val = filter[key];
+            if (val || parseInt(val, 10) === 0) {
+                crushedFilter[key] = val;
             }
         });
 
-        crushedFilter.id = { $type: 'int' };
         return crushedFilter;
     }
 }

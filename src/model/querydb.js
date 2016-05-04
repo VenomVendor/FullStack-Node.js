@@ -2,12 +2,16 @@ import { constants, strings as S } from '../utils/constants';
 import DBHandler from '../controller/dbhandler';
 import ParamsExtractor from './paramsextractor';
 import AI from './ai';
+import { mongoConfig } from '../utils/config';
 
 const dbs = new DBHandler();
 
 class QueryDB extends ParamsExtractor {
     fetchFromDb(params, callback) {
         const filter = super.extractReqParams();
+        if (params.collName === mongoConfig.COLLECTION_USER) {
+            filter.id = { $type: 'int' };
+        }
 
         const ai = new AI();
         const mParams = ai.stripParams(params.queryParams);
