@@ -32,7 +32,7 @@ router.get('/weather', (req, res) => {
 });
 
 /* GET User listing. */
-router.get('/user*|user*.html', (req, res) => {
+router.get('/user*', (req, res) => {
     const query = new QueryDB(req.query);
 
     const dbPrams = {

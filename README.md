@@ -54,7 +54,7 @@ airport | string | - | Airport Name
 day | integer | - | gt~ / gte~ / lt~ / lte~ `ex: gt~4`
 time | integer | - | gt~ / gte~ / lt~ / lte~ `ex: gte~4`
 temp  | integer | - | gt~ / gte~ / lt~ / lte~ `ex: lt~4`
-humid | integer | - | gt~ / gte~ / lt~ / lte~ `ex: lte~4`
+humidity | integer | - | gt~ / gte~ / lt~ / lte~ `ex: lte~4`
 windSpeed | integer | - | gt~ / gte~ / lt~ / lte~ `ex: 4`
 windDir | integer | - | gt~ / gte~ / lt~ / lte~ `ex: 4.0`
 pressureStation | integer | - | gt~ / gte~ / lt~ / lte~ `ex: 04`
