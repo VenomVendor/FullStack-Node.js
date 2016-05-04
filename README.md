@@ -39,7 +39,7 @@ gulp
 # Weather APIs
  - http://localhost:3030/v1/get/weather?[params]
 
-<pre>http://localhost:3030/v1/get/weather?limit=20&offset=0&state=Vermont&temperature=lte~39&windSpeed=gt~4.00000&windDir=lt~180&humidity=gte~60</pre>
+<pre>http://localhost:3030/v1/get/weather?limit=20&offset=0&state=Vermont&temp=lte~39&windSpeed=gt~4.00000&windDir=lt~180&humidity=gte~60</pre>
  
 # Weather Params
 param<br>(case-sensitive) | Type | Default | Description
