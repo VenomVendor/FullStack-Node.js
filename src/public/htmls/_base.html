@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="/css/style{{ hash }}.min.css">
+</head>
+<body>
+    {% block content %}
+        <p>You are in A <strong id="uri">latest-1</strong> page.</p>
+    {% endblock %}
+    <p>Try navigating to <strong><a id="uri-next" href="#">next random</a> page.</strong></p>
+    <script src="/js/script-link{{ hash }}.min.js" type="text/javascript" charset="utf-8" async defer></script>
+</body>
+</html>
