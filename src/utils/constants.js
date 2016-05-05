@@ -8,7 +8,8 @@ const constants = {
         VERSION: '1.0.0',
         ABOUT: 'FullStack & RESTful webservices with Node, Express, ejs & MongoDB'
     },
-    DEBUG: false
+    LOG_REQUEST: true,
+    DEBUG: true
 };
 
 const strings = {

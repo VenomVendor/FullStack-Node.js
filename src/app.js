@@ -31,9 +31,24 @@ logger.date = () => new Date().getTime();
 
 const app = express();
 const start = process.hrtime();
-const accessLogStream = fs.createWriteStream(logDir + accessLog, {
-    flags: 'a'
-});
+
+if (constants.LOG_REQUEST) {
+    try {
+        fs.accessSync(logDir);
+    } catch (e) {
+        fs.mkdirSync(logDir);
+    }
+    try {
+        fs.accessSync(logDir);
+        const accessLogStream = fs.createWriteStream(logDir + accessLog, {
+            flags: 'a'
+        });
+        app.use(logger(loggerFormat, { stream: accessLogStream }));
+    } catch (e) {
+        console.log(`Unable to create ${accessLog} logger will not utilized`);
+    }
+}
+
 const sendError = (req, res, status) => {
     const callback = req.query.callback || null;
     const data = {
@@ -101,7 +116,6 @@ app.use('/css', express.static(path.join(buildDir, 'public', 'stylesheets')));
 app.use('/img', express.static(path.join(buildDir, 'public', 'images')));
 app.use(favicon(path.join(buildDir, 'public', 'images', 'favicon.ico')));
 
-app.use(logger(loggerFormat, { stream: accessLogStream }));
 /* ************* SERVE STATIC END ***************** */
 
 app.use(`${revision}/`, index);
