@@ -1,8 +1,8 @@
-# RESTful-Node
-  Getting started with Node-Express-MongoDB
+# FullStack-Node.js
+  Getting started with Node-Express-ejs-MongoDB
 
 # clone
-<pre>git clone https://github.com/VenomVendor/RESTful-Node.git</pre>
+<pre>git clone https://github.com/VenomVendor/FullStack-Node.js.git</pre>
 
 # prerequisites
  - Node https://nodejs.org/en/download/ / https://docs.npmjs.com/getting-started/installing-node
@@ -10,8 +10,8 @@
 
 # {Installation}
 <pre>
-git clone https://github.com/VenomVendor/RESTful-Node.git
-cd RESTful-Node
+git clone https://github.com/VenomVendor/FullStack-Node.js.git
+cd FullStack-Node.js
 npm i
 gulp
 </pre>
