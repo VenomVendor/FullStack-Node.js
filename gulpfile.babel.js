@@ -19,10 +19,10 @@ const destFiles = {
 };
 destFiles.img = [`${destFiles.dir}images/**/*`, `!${destFiles.dir}images/**/*.ico`];
 
-const DEBUG = !true;
+const DEBUG = true;
 const RENAME = true;
-const STRIP_METADATA = true;
-const $ = gulpLoadPlugins({ DEBUG });
+const STRIP_METADATA = false;
+const $ = gulpLoadPlugins();
 
 /**
  * delete files
@@ -263,13 +263,15 @@ gulp.task('watch', (done) => {
  * Initial/default task.
  */
 gulp.task('default',
-    gulp.series('clean',
-        gulp.parallel('minify-html',
+    gulp.series(
+        'clean',
+        gulp.parallel(
+            'minify-html',
             'vendor-js',
             'js-self-lint',
-            gulp.series('images', 'strip-metadata'),
+            'styles',
             gulp.series('git-hash', 'eslint', 'minify-js'),
-            'styles'
+            gulp.series('images', 'strip-metadata')
         ),
         'watch',
         'nodemon'
