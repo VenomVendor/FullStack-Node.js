@@ -44,27 +44,31 @@ class QueryDB extends ParamsExtractor {
                         return;
                     }
 
-                    collection.find(filter).skip(offset).limit(limit).sort({ id: 1 }).toArray((__err, docs) => {
-                        if (__err) {
-                            callback(__err, {
-                                status: 500,
-                                error: dbs.queryError(__err)
-                            });
-                            return;
-                        }
-                        const data = {
-                            status: constants.SUCCESS,
-                            total: _stat.count,
-                            size: docs.length,
-                            title: titleData[0].title,
-                            result: docs
-                        };
+                    collection.find(filter)
+                        .skip(offset)
+                        .limit(limit)
+                        .sort({ id: 1 })
+                        .toArray((__err, docs) => {
+                            if (__err) {
+                                callback(__err, {
+                                    status: 500,
+                                    error: dbs.queryError(__err)
+                                });
+                                return;
+                            }
+                            const data = {
+                                status: constants.SUCCESS,
+                                total: _stat.count,
+                                size: docs.length,
+                                title: titleData[0].title,
+                                result: docs
+                            };
 
-                        if (cb) {
-                            data.callback = cb;
-                        }
-                        callback(null, data);
-                    });
+                            if (cb) {
+                                data.callback = cb;
+                            }
+                            callback(null, data);
+                        });
                 });
             });
         });
