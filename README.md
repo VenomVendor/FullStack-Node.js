@@ -13,7 +13,6 @@
 git clone https://github.com/VenomVendor/FullStack-Node.js.git
 cd FullStack-Node.js
 npm i
-gulp
 </pre>
 
 # Start Mongo Server
@@ -85,6 +84,7 @@ g | string | - | `king`/`queen`
 
 # TODO
     - Move to ES6 Promise.
+    - Write test cases.
 
 # License
     Copyright© 2016 VenomVendor <info@VenomVendor.com>
