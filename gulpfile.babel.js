@@ -232,6 +232,22 @@ gulp.task('watch', (done) => {
 });
 
 /**
+ * Gulp Travis
+ */
+gulp.task('travis',
+    gulp.series(
+        'clean',
+        gulp.parallel(
+            'minify-html',
+            'vendor-js',
+            'js-self-lint',
+            'styles',
+            gulp.series('git-hash', 'eslint', 'minify-js'),
+            gulp.series('images', 'strip-metadata')
+        )
+    ));
+
+/**
  * Initial/default task.
  */
 gulp.task('default',

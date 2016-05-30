@@ -1,2 +1,13 @@
 sudo: false
 language: node_js
+node_js:
+  - 6
+notifications:
+  email: false
+branches:
+  only:
+    - develop
+before_script:
+  - npm i -g gulpjs/gulp.git#4.0
+script:
+  - gulp travis
