@@ -16,7 +16,7 @@ const responseHelper = (req, res, err, response) => {
 };
 
 /* delete. */
-router.all('/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
     const query = new QueryDB();
 
     const dbPrams = {

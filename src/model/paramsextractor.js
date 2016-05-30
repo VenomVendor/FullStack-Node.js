@@ -16,7 +16,7 @@ const extractCommonParams = (q) => {
         if (_id.trim().length === 24) {
             filter[column._id] = new ObjectID(_id);
         } else {
-            filter[column._id] = new ObjectID('000000000000000000000000');
+            filter[column._id] = new ObjectID('0'.repeat(24));
         }
     }
     return filter;
@@ -48,7 +48,6 @@ class ParamsExtractor {
                 break;
             case mongoConfig.COLLECTION_USER:
                 filter = this.extractUserParams();
-                filter.id = { $type: 'int' };
                 break;
             default:
                 throw new Error('Unknown Collection');
@@ -100,6 +99,10 @@ class ParamsExtractor {
         filter[column.Company] = company;
         filter[column.Email] = email;
         filter[column.Gender] = ai.getGender(gender);
+
+        if (isNaN(filter.id)) {
+            filter.id = { $type: 'number' };
+        }
 
         return crushFilter(filter);
     }

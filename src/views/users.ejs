@@ -12,8 +12,9 @@
     <% include includes/header.ejs %>
 </header>
 <section>
-    <% docs.forEach(function(user) { %>
-        <%- include('includes/cards/user', { user }); %>
+    <% var noClick = noClick || false;
+    docs.forEach(function(user) { %>
+    <%- include('includes/cards/user', { user, noClick }); %>
     <% }); %>
 </section>
 <footer>
