@@ -1,6 +1,5 @@
 <!-- Card widget -->
-<div class="card" data-id="<%= parseInt(user.id, 10) %>">
-
+<div class="card<%if (noClick) { %> no-click<% } %>" data-id="<%= parseInt(user.id, 10) %>">
     <!-- Face 2 -->
     <div class="card-face face-2">
         <!-- Back trigger -->

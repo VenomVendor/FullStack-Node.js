@@ -1,13 +1,13 @@
 import { constants, strings as S } from '../utils/constants';
 import DBHandler from '../controller/dbhandler';
-import ParamsExtractor from './paramsextractor';
 import AI from './ai';
 
 const dbs = new DBHandler();
 
-class QueryDB extends ParamsExtractor {
+class QueryDB {
     fetchFromDb(params, callback) {
-        const filter = super.extractReqParams(params.collName);
+        const filter = params.filter;
+
         const ai = new AI();
         const mParams = ai.stripParams(params.queryParams);
         const limit = mParams.limit;

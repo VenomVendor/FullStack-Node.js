@@ -163,19 +163,17 @@ app.all('/', (req, res) => {
 
 /* ############### ERROR HANDLERS STARTS ############### */
 // Handler for internal server errors - 500
-const errorHandler = (err, req, res, next) => {
+const errorHandler = (err, req, res) => {
     if (app.get('env') === 'development') {
         console.error(err.message);
         console.error(err.stack);
     }
     sendError(req, res, 500);
-    next();
 };
 
 // catch 404 and forward to error handler.
-const notFound = (req, res, next) => {
+const notFound = (req, res) => {
     sendError(req, res, 404);
-    next();
 };
 
 app.use(errorHandler);
