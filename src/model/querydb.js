@@ -1,13 +1,13 @@
 import { constants, strings as S } from '../utils/constants';
 import DBHandler from '../controller/dbhandler';
-import ParamsExtractor from './paramsextractor';
 import AI from './ai';
 
 const dbs = new DBHandler();
 
-class QueryDB extends ParamsExtractor {
+class QueryDB {
     fetchFromDb(params, callback) {
-        const filter = super.extractReqParams(params.collName);
+        const filter = params.filter;
+
         const ai = new AI();
         const mParams = ai.stripParams(params.queryParams);
         const limit = mParams.limit;
@@ -44,27 +44,31 @@ class QueryDB extends ParamsExtractor {
                         return;
                     }
 
-                    collection.find(filter).skip(offset).limit(limit).sort({ id: 1 }).toArray((__err, docs) => {
-                        if (__err) {
-                            callback(__err, {
-                                status: 500,
-                                error: dbs.queryError(__err)
-                            });
-                            return;
-                        }
-                        const data = {
-                            status: constants.SUCCESS,
-                            total: _stat.count,
-                            size: docs.length,
-                            title: titleData[0].title,
-                            result: docs
-                        };
+                    collection.find(filter)
+                        .skip(offset)
+                        .limit(limit)
+                        .sort({ id: 1 })
+                        .toArray((__err, docs) => {
+                            if (__err) {
+                                callback(__err, {
+                                    status: 500,
+                                    error: dbs.queryError(__err)
+                                });
+                                return;
+                            }
+                            const data = {
+                                status: constants.SUCCESS,
+                                total: _stat.count,
+                                size: docs.length,
+                                title: titleData[0].title,
+                                result: docs
+                            };
 
-                        if (cb) {
-                            data.callback = cb;
-                        }
-                        callback(null, data);
-                    });
+                            if (cb) {
+                                data.callback = cb;
+                            }
+                            callback(null, data);
+                        });
                 });
             });
         });

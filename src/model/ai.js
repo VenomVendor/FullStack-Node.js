@@ -34,17 +34,18 @@ class AI {
     }
 
     getConditionalKey(val) {
+        const split = '~';
         if (!val) {
             return val;
         }
         let ret;
-        const seperator = val.search('~');
+        const seperator = val.search(split);
         if (seperator < 0) {
             ret = parseFloat(val);
         } else {
             const condition = val.substr(0, seperator);
             if (condition === 'gt' || condition === 'lt' || condition === 'gte' || condition === 'lte') {
-                const parsedVal = parseFloat(val.substring(val.search('~') + 1));
+                const parsedVal = parseFloat(val.substring(val.search(split) + 1));
                 if (!isNaN(parsedVal)) {
                     ret = { [`$${condition}`]: parsedVal };
                 }

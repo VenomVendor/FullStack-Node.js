@@ -1,19 +1,21 @@
 # FullStack-Node.js
   Getting started with Node-Express-ejs-MongoDB
 
-# clone
+[![Build Status](https://travis-ci.org/VenomVendor/FullStack-Node.js.svg?branch=develop)](https://travis-ci.org/VenomVendor/FullStack-Node.js) [![bitHound Code](https://www.bithound.io/github/VenomVendor/FullStack-Node.js/badges/code.svg)](https://www.bithound.io/github/VenomVendor/FullStack-Node.js) [![bitHound Overall Score](https://www.bithound.io/github/VenomVendor/FullStack-Node.js/badges/score.svg)](https://www.bithound.io/github/VenomVendor/FullStack-Node.js) [![bitHound Dependencies](https://www.bithound.io/github/VenomVendor/FullStack-Node.js/badges/dependencies.svg)](https://www.bithound.io/github/VenomVendor/FullStack-Node.js/develop/dependencies/npm) [![bitHound Dev Dependencies](https://www.bithound.io/github/VenomVendor/FullStack-Node.js/badges/devDependencies.svg)](https://www.bithound.io/github/VenomVendor/FullStack-Node.js/develop/dependencies/npm)
+
+# Clone
 <pre>git clone https://github.com/VenomVendor/FullStack-Node.js.git</pre>
 
-# prerequisites
+# Prerequisites
  - Node https://nodejs.org/en/download/ / https://docs.npmjs.com/getting-started/installing-node
  - MongoDB https://docs.mongodb.org/manual/installation/
+ - **Gulp 4+** installed globally
 
 # {Installation}
 <pre>
 git clone https://github.com/VenomVendor/FullStack-Node.js.git
 cd FullStack-Node.js
 npm i
-gulp
 </pre>
 
 # Start Mongo Server
@@ -85,6 +87,7 @@ g | string | - | `king`/`queen`
 
 # TODO
     - Move to ES6 Promise.
+    - Write test cases.
 
 # License
     Copyright© 2016 VenomVendor <info@VenomVendor.com>

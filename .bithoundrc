@@ -1,0 +1,11 @@
+{
+    "ignore": [
+        "**/node_modules/**",
+        "**/public/**/vendor/**"
+    ],
+    "critics": {
+        "lint": {
+            "engine": "eslint"
+        }
+    }
+}
